@@ -12,31 +12,31 @@
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var hash = this.hash;
       var target = $(hash);
+      
       if (target.length) {
         e.preventDefault();
 
-        if ($(this).parents('.nav-menu, .mobile-nav').length) {
-          $('.nav-menu .active, .mobile-nav .active').removeClass('active');
-          $(this).closest('li').addClass('active');
-        }
+        // Update active state in navigation
+        $('.nav-menu .active, .mobile-nav .active').removeClass('active');
+        $(this).closest('li').addClass('active');
 
-        if (hash == '#top-header') {
-          $('#top-header').removeClass('header-top');
-          $("section").removeClass('section-show');
-          return;
-        }
+        // Smooth scroll to target
+        $('html, body').animate({
+          scrollTop: target.offset().top - 90 // Offset for fixed header
+        }, 800, function() {
+          // Add header-top class if not home section
+          if (hash !== '#top-header') {
+            $('#top-header').addClass('header-top');
+          } else {
+            $('#top-header').removeClass('header-top');
+          }
 
-        if (!$('#top-header').hasClass('header-top')) {
-          $('#top-header').addClass('header-top');
-          setTimeout(function() {
-            $("section").removeClass('section-show');
-            $(hash).addClass('section-show');
-          }, 350);
-        } else {
+          // Show the target section
           $("section").removeClass('section-show');
           $(hash).addClass('section-show');
-        }
+        });
 
+        // Handle mobile nav
         if ($('body').hasClass('mobile-nav-active')) {
           $('body').removeClass('mobile-nav-active');
           $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
@@ -44,7 +44,6 @@
         }
 
         return false;
-
       }
     }
   });
